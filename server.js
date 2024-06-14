@@ -1,7 +1,9 @@
 const express = require('express');
+const serverless = require("serverless-http");
 const bodyParser = require('body-parser');
 const path = require('path');
 const app = express();
+const router = express.Router();
 const multer = require('multer');
 const fs = require('fs');
 
@@ -97,5 +99,8 @@ app.get('/play', (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+app.use("/.netlify/functions/app", router);
+module.exports.handler = serverless(app);
 
 
