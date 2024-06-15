@@ -16,10 +16,10 @@ body {
 
 
 /*RECORDING VIEW*/
-.start-btn {
+.stop-btn {
   text-decoration: none;
   color: white;
-  background-color: blue;
+  background-color: red;
   padding: 10px 20px;
   border-radius: 5px;
 }
