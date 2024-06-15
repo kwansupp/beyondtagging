@@ -24,7 +24,8 @@ app.use(
 
 // routing
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'views', 'index.html'));
+    // res.sendFile(path.join(__dirname, 'public', 'views', 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'views', 'record.html'));
 });
 
 app.get('/record', (req, res) => {
