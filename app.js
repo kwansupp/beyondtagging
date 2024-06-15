@@ -29,11 +29,11 @@ app.get('/', (req, res) => {
 });
 
 app.get('/record', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'views', 'record.html'));
+    res.sendFile(path.join(__dirname, 'public', 'record.html'));
 });
 
 app.get('/play', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'views', 'play.html'));
+    res.sendFile(path.join(__dirname, 'public', 'play.html'));
 });
 
 const PORT = process.env.PORT || 3000;
