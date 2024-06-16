@@ -209,7 +209,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		.then(data => {
 			console.log("Sent: ", data); // handle success response
 			// redirect
-			// window.location.href = '/';
+			window.location.href = '/play';
 		})
 		.catch(error => {
 			console.error('Error:', error); // handle error

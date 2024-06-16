@@ -61,81 +61,89 @@ document.addEventListener("DOMContentLoaded", function() {
 				let audio = new Audio();
 				let el = document.createElement("source");
 				el.src = audioDir + fn + '.webm';
+				el.classList.add("audio-element");
 				audio.appendChild(el);
 				audioEls.push(audio);
 			}
 		}
 
 		let nRecords = audioEls.length;
+		// update amount of records
+		document.getElementById("status").innerHTML = "Playing all recorded results. Total amount: " + nRecords;
 
-		// start playing audio
-		audioEls[0].play(); audioEls[1].play(); audioEls[2].play();
-
-		// start redrawing
-		let totalTime = calculateDrawLength(mouseXYs);
-
-		redraw(totalTime, mouseXYs, nRecords);
+		for (let i = 0; i < nRecords; i++){
+			audioEls[i].play();
+			redraw(mouseXYs[i], randomColor());
+		}
+		// // start playing audio
+		audioEls[0].play(); 
+		audioEls[1].play(); 
 	}
 
-	function redraw(time, coord_arr, nRecords) {
-		let rec_length = coord_arr[0].length;
-		// console.log(coord_arr[0]);
-		// line path settings
-		ctx.beginPath();
-    	ctx.lineWidth = 5;
-    	ctx.lineCap = "round";
-    	ctx.strokeStyle = "red";
-    	let coord = {x:0, y:0};
+	function randomColor() {
+		let r = Math.floor(Math.random() * 256);
+    	let g = Math.floor(Math.random() * 256);
+    	let b = Math.floor(Math.random() * 256);
+    	return "rgb("+r+","+g+","+b+")";
+	}
+
+	async function redraw(coord_arr, line_color) {
+		const timer = ms => new Promise(res => setTimeout(res, ms))
+		let rec_length = coord_arr.length; //points in record 
+		tmp_ctx = canvas.getContext('2d');
+		
+
+    	// console.log(coord_arr[0]); // record n
+    	// console.log(coord_arr[0][0]); //point i
+    	// console.log(coord_arr[0][0][1]); //x coord
+    	// console.log(coord_arr[0][0][2]); //y coord
+
+    	for (let i = 0; i < rec_length - 1; i++) {
+    		// line path settings
+			tmp_ctx.beginPath();
+	    	tmp_ctx.lineWidth = 5;
+	    	tmp_ctx.lineCap = "round";
+	    	tmp_ctx.strokeStyle = line_color;
+	    	let coord = {x:0, y:0};
+	    	let delay = 20;
+    		// setTimeout('app.canvas.getContext("2d").', delay*i);
+    		tmp_ctx.moveTo(coord_arr[i][1], coord_arr[i][2]);
+    		tmp_ctx.lineTo(coord_arr[i+1][1], coord_arr[i+1][2]);
+    		tmp_ctx.stroke();
+    		tmp_ctx.closePath();
+    		// console.log(coord_arr[i][0]);
+    		// delay += 50;
+    		await timer(delay);
+
+    	}
 
 		// start time interval
-		let elapsedTime = 0;
-		const startTime = Date.now() - elapsedTime;
+		// let elapsedTime = 0;
+		// const startTime = Date.now() - elapsedTime;
 
-	    timerInterval = setInterval(() => {
-	    	elapsedTime = Date.now() - startTime;
+	    // timerInterval = setInterval(() => {
+	    // 	elapsedTime = Date.now() - startTime;
 
-	        // console.log("elapsedTime", elapsedTime, coord_arr[0][0][0]);
+	    //     // console.log("elapsedTime", elapsedTime, coord_arr[0][0][0]);
 
-	        if (elapsedTime == coord_arr[0][0][0]) {
-	        	coord.x = coord_arr[0][0][1];
-	        	coord.y = coord_arr[0][0][2];
-	        	console.log("PING", coord.x, coord.y);
+	    //     if (elapsedTime == coord_arr[0][0][0]) {
+	    //     	coord.x = coord_arr[0][0][1];
+	    //     	coord.y = coord_arr[0][0][2];
+	    //     	console.log("PING", coord.x, coord.y);
 
-	        	ctx.moveTo(coord.x, coord.y);
-		    	// reposition(e);
-		    	ctx.lineTo(coord.x, coord.y);
-		    	ctx.stroke();
-	        	// try {
-	        		coord_arr[0].shift();
-	        	// }
-	        }
+	    //     	ctx.moveTo(coord.x, coord.y);
+		//     	// reposition(e);
+		//     	ctx.lineTo(coord.x, coord.y);
+		//     	ctx.stroke();
+	    //     	// try {
+	    //     		coord_arr[0].shift();
+	    //     	// }
+	    //     }
 
-	        if (elapsedTime > time) {
-	        	clearInterval(timerInterval);
-	        }
-	    }, 1);
-
-		console.log("record", coord_arr[0]);
-
-		
-
-		// for (let t = 0; t < time+1; t++) {
-			// console.log("time", coord_arr[0][0][0]);
-
-			// if (t == coord_arr[0][0][0]) {
-			// 	coord.x = coord_arr[0][0][1];
-			// 	coord.y = coord_arr[0][0][2];
-			// 	console.log(coord.x, coord.y);
-			// 	// console.log(coord_arr[0][0][1]);
-			// }
-			// coord_arr[0].shift();
-		// }
-		
-    	// ctx.moveTo(coord.x, coord.y);
-    	// reposition(e);
-    	// ctx.lineTo(coord.x, coord.y);
-    	// ctx.stroke();
-
+	    //     if (elapsedTime > time) {
+	    //     	clearInterval(timerInterval);
+	    //     }
+	    // }, 1);
 	}
 
 	async function loadData() {
@@ -188,8 +196,6 @@ document.addEventListener("DOMContentLoaded", function() {
     	ctx.stroke();
     	
     }
-
-
 
 	// PLAY AUDIO RECORDING
 

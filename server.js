@@ -17,11 +17,11 @@ const storage = multer.diskStorage({
 
 const upload = multer({storage: storage}).single('audioBlob');
 
-const https = require('https');
-const options = {
-	key:fs.readFileSync('server.key'),
-	cert: fs.readFileSync('server.crt')
-};
+// const https = require('https');
+// const options = {
+// 	key:fs.readFileSync('server.key'),
+// 	cert: fs.readFileSync('server.crt')
+// };
 
 
 // middleware
@@ -103,10 +103,10 @@ app.get('/play', (req, res) => {
 	res.sendFile(path.join(__dirname, 'public', 'views', 'play.html'));
 });
 
-// const PORT = process.env.PORT || 3000;
-// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-const sslServer=https.createServer(options,app);
-sslServer.listen(3000,()=>{
-console.log('Secure server is listening on port 3000')
-})
+// const sslServer=https.createServer(options,app);
+// sslServer.listen(3000,()=>{
+// console.log('Secure server is listening on port 3000')
+// })
