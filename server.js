@@ -86,19 +86,6 @@ app.get('/getfiles', (req, res) => {
 	})
 });
 
-// route for reading and loading audio data from specific blob file
-// app.get('/readaudioblobs/:fn', (req, res) => {
-// 	const fn = req.params.fn;
-// 	fs.readFile(path.join(__dirname, 'public', 'data', 'audio', fn), (err, data) => {
-// 		if (err) {
-// 			console.error(err);
-// 			return;
-// 		}
-// 		res.send(data);
-// 		console.log('GET sent audio blob', fn);
-// 	});
-// });
-
 app.get('/play', (req, res) => {
 	res.sendFile(path.join(__dirname, 'public', 'views', 'play.html'));
 });
