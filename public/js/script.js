@@ -308,12 +308,13 @@ function audioRec() {
 function saveRecording(filename, audioBlob, mousePos) {
 	let formData = new FormData();
 
-	formData.append('audioBlob', audioBlob, filename);
+	formData.append('filename', filename);
+	formData.append('audioBlob', audioBlob);
 	formData.append('mousePos', mousePos);
 
 	console.log("saveRecording data:", formData);
 
-	fetch('/saverecording', {
+	fetch('/.netlify/functions/saverecording', {
 		method: 'POST',
 		body: formData
 	})

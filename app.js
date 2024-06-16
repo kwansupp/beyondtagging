@@ -40,46 +40,27 @@ app.get('/play', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'play.html'));
 });
 
-// app.post('/savefile', (req, res) => {
-//     test_obj = [{
-//         "x": 5,
-//         "y": 128
-//     },
-//     {
-//         "x": 18,
-//         "y": 141
-//     }];
-//     fp = path.join(__dirname, 'public', 'data', 'json', 'test.json');
-//     fs.writeFile(fp, test_obj, (err) => {
+// app.post('/saverecording', async (req, res) => {
+//     upload(req, res, function (err) {
 //         if (err) {
-//             console.log(err);
+//             console.log(err)
 //         } else {
-//             console.log("test file written successfilly");
+//             res.status(200).send(req.file.filename);
+//             // write mouseXY data as files with filename
+//             let fn = path.parse(req.file.filename).name;
+//             filepath = path.join(__dirname, 'public', 'data', 'json', fn +'.json');
+//             // console.log(filepath);
+//             fs.writeFile(filepath, req.body.mousePos, (err) => {
+//                 if (err) {
+//                     console.log(err);
+//                 }
+//                 else {
+//                     console.log("file written successfully");
+//                 }
+//             });
 //         }
 //     })
-
 // });
-app.post('/saverecording', async (req, res) => {
-    upload(req, res, function (err) {
-        if (err) {
-            console.log(err)
-        } else {
-            res.status(200).send(req.file.filename);
-            // write mouseXY data as files with filename
-            let fn = path.parse(req.file.filename).name;
-            filepath = path.join(__dirname, 'public', 'data', 'json', fn +'.json');
-            // console.log(filepath);
-            fs.writeFile(filepath, req.body.mousePos, (err) => {
-                if (err) {
-                    console.log(err);
-                }
-                else {
-                    console.log("file written successfully");
-                }
-            });
-        }
-    })
-});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
