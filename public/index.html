@@ -4,28 +4,31 @@
   <title>Beyond Tagging</title>
   <link rel="stylesheet" type="text/css" href="css/style.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<!--   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script>
-  <script src="https://unpkg.com/p5.js-svg@1.3.1"></script> -->
+  <script src="https://unpkg.com/p5.js-svg@1.3.1"></script>
 </head>
 <body>
   <div class="container">
     <div class="header">
       <h1>Beyond Tagging</h1>
-      <p>Draw over the image and describe what you see! Hover mouse over image to begin drawing.</p>
+      <p>Draw over the image and describe what you see! </p>
       <p><a class="btn btn-primary" href="play" role="button">View all recordings</a></p>
       <p><a id="replayBtn" class="btn" href="#" role="button">Play recording</a></p>
       <!-- <p>Status: <span id="status">Move your cursor into the image area to start recording!</span></p> -->
     </div> 
     <div id="content">
       <div id="image-container">
-        <canvas id="canvas"></canvas>
+        <!-- <canvas id="canvas"></canvas> -->
       </div>
       <!-- <p><a id="startButton" class="btn btn-primary start-btn" href="#" role="button">Start recording</a></p> -->
-      <div id="recordingStatus" style="display:none">
+      <div id="status-container">
+        <p id="status-text"></p>
+      </div>
+<!--       <div id="recordingStatus" style="display:none">
         <p>You are currently being recorded. To save recording, press stop button. If you want to start over without saving, refresh this page.</p>
         <p><a id="saveBtn" class="btn btn-primary stop-btn" href="#" role="button">Stop and save recording</a></p>
-      </div>
+      </div> -->
     </div>
   </div>
   <script src="/js/script.js"></script>
