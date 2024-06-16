@@ -40,25 +40,6 @@ app.get('/play', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'play.html'));
 });
 
-// app.post('/savefile', (req, res) => {
-//     test_obj = [{
-//         "x": 5,
-//         "y": 128
-//     },
-//     {
-//         "x": 18,
-//         "y": 141
-//     }];
-//     fp = path.join(__dirname, 'public', 'data', 'json', 'test.json');
-//     fs.writeFile(fp, test_obj, (err) => {
-//         if (err) {
-//             console.log(err);
-//         } else {
-//             console.log("test file written successfilly");
-//         }
-//     })
-
-// });
 app.post('/saverecording', async (req, res) => {
     upload(req, res, function (err) {
         if (err) {
