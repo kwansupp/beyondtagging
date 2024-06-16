@@ -1,6 +1,155 @@
 console.log("script.js loaded");
 console.log(window.location.pathname);
 
+//keeps track of time
+let timer = 0;
+
+//this saves the mouse position
+let pvmx = 0;
+let pvmy = 0;
+let mousePos = {
+	"x": [],
+	"y": []
+};
+
+//this sets up the mic
+let mic, recorder, soundFile;
+let state = 0;
+
+//this tracks if we started the recording of mouse movmt
+let recmouse = 0;
+
+// creates button item
+let cnv;
+
+function preload(){
+img = loadImage('/img/plane-glacier.jpg'); // Load the image
+
+}
+
+function setup() {
+  var canvas = createCanvas(800, 500, SVG);
+  canvas.parent("image-container");
+  background(img);
+  
+  //create button
+  cnv = createButton('Start recording.');
+  cnv.parent("status-container");
+  cnv.mousePressed(audioRec);
+
+  // create an audio in
+  mic = new p5.AudioIn();
+
+  // prompts user to enable their browser mic
+  mic.start();
+
+  // create a sound recorder
+  recorder = new p5.SoundRecorder();
+
+  // connect the mic to the recorder
+  recorder.setInput(mic);
+
+  // this sound file will be used to
+  // playback & save the recording
+  soundFile = new p5.SoundFile();
+  
+}
+
+
+function draw() {
+  strokeWeight(5);
+  stroke(255, 204, 0);
+
+   if (millis() >= 100+timer && recmouse == 1) {
+    line(pvmx, pvmy, mouseX, mouseY);
+    timer = millis();
+    pvmx = mouseX;
+    pvmy = mouseY;
+    // log pvpmx, pvmy
+    mousePos.x.push(pvmx);
+    mousePos.y.push(pvmy)
+  }
+}
+
+
+function audioRec() {
+  // ensure audio is enabled
+  userStartAudio();
+
+  // make sure user enabled the mic
+  if (state === 0 && mic.enabled) {
+
+    // record to our p5.SoundFile
+    recorder.record(soundFile);
+
+    cnv.html("Stop recording."); // Change the button's HTML content
+    $("#status-text").text("Your voice and mouse are being recorded.")
+    
+    state++;
+    recmouse++;
+    
+    //this starts the mouse at the right position
+    
+    pvmx = mouseX;
+    pvmy = mouseY;
+  }
+  else if (state === 1) {
+
+    // stop recorder and
+    // send result to soundFile
+    recorder.stop();
+    
+    cnv.html("Submit recording."); // Change the button's HTML content
+    $("#status-text").text("Your recording is completed, please submit your recording to be saved! If you wish to redo your recording, refresh this page.")
+
+    state++;
+    recmouse++;
+  }
+
+  else if (state === 2) {
+  	// SEND DATA TO SAVE
+  	// console.log(soundFile);
+  	// get blob of sound file
+  	let audioBlob = soundFile.getBlob();
+  	console.log(audioBlob);
+  	console.log(mousePos);
+
+  	saveRecording("test", audioBlob, mousePos);
+
+
+    // save(soundFile, 'mySound.wav');
+    state++;
+    // save('mySVG.svg');
+    
+    // cnv.html("All done, please send it to us!."); // Change the button's HTML content
+    // redirect to view all recordings
+  }
+}
+
+function saveRecording(filename, audioBlob, mousePos) {
+	let formData = new FormData();
+
+	formData.append('audioBlob', audioBlob, filename);
+	formData.append('mousePos', mousePos);
+
+	console.log("saveRecording data:", formData);
+
+	fetch('/saverecording', {
+		method: 'POST',
+		body: formData
+	})
+	.then(response =>response.text())
+	.then(data => {
+		console.log("Sent: ", data); // handle success response
+		// redirect
+
+	})
+	.catch(error => {
+		console.log('Error: ', error);
+	});
+}
+
+
 // (function (app, $, undefined) {
 
 //     $(document).ready(function () {
@@ -179,152 +328,4 @@ console.log(window.location.pathname);
 //     };
 
 // })(window.app = window.app || {}, jQuery)
-
-//keeps track of time
-let timer = 0;
-
-//this saves the mouse position
-let pvmx = 0;
-let pvmy = 0;
-let mousePos = {
-	"x": [],
-	"y": []
-};
-
-//this sets up the mic
-let mic, recorder, soundFile;
-let state = 0;
-
-//this tracks if we started the recording of mouse movmt
-let recmouse = 0;
-
-// creates button item
-let cnv;
-
-function preload(){
-img = loadImage('/img/plane-glacier.jpg'); // Load the image
-
-}
-
-function setup() {
-  var canvas = createCanvas(800, 500, SVG);
-  canvas.parent("image-container");
-  background(img);
-  
-  //create button
-  cnv = createButton('Start recording.');
-  cnv.parent("status-container");
-  cnv.mousePressed(audioRec);
-
-  // create an audio in
-  mic = new p5.AudioIn();
-
-  // prompts user to enable their browser mic
-  mic.start();
-
-  // create a sound recorder
-  recorder = new p5.SoundRecorder();
-
-  // connect the mic to the recorder
-  recorder.setInput(mic);
-
-  // this sound file will be used to
-  // playback & save the recording
-  soundFile = new p5.SoundFile();
-  
-}
-
-
-function draw() {
-  strokeWeight(5);
-  stroke(255, 204, 0);
-
-   if (millis() >= 100+timer && recmouse == 1) {
-    line(pvmx, pvmy, mouseX, mouseY);
-    timer = millis();
-    pvmx = mouseX;
-    pvmy = mouseY;
-    // log pvpmx, pvmy
-    mousePos.x.push(pvmx);
-    mousePos.y.push(pvmy)
-  }
-}
-
-
-function audioRec() {
-  // ensure audio is enabled
-  userStartAudio();
-
-  // make sure user enabled the mic
-  if (state === 0 && mic.enabled) {
-
-    // record to our p5.SoundFile
-    recorder.record(soundFile);
-
-    cnv.html("Stop recording."); // Change the button's HTML content
-    $("#status-text").text("Your voice and mouse are being recorded.")
-    
-    state++;
-    recmouse++;
-    
-    //this starts the mouse at the right position
-    
-    pvmx = mouseX;
-    pvmy = mouseY;
-  }
-  else if (state === 1) {
-
-    // stop recorder and
-    // send result to soundFile
-    recorder.stop();
-    
-    cnv.html("Submit recording."); // Change the button's HTML content
-    $("#status-text").text("Your recording is completed, please submit your recording to be saved! If you wish to redo your recording, refresh this page.")
-
-    state++;
-    recmouse++;
-  }
-
-  else if (state === 2) {
-  	// SEND DATA TO SAVE
-  	// console.log(soundFile);
-  	// get blob of sound file
-  	let audioBlob = soundFile.getBlob();
-  	console.log(audioBlob);
-  	console.log(mousePos);
-
-  	saveRecording("test", audioBlob, mousePos);
-
-
-    // save(soundFile, 'mySound.wav');
-    state++;
-    // save('mySVG.svg');
-    
-    // cnv.html("All done, please send it to us!."); // Change the button's HTML content
-    // redirect to view all recordings
-  }
-}
-
-function saveRecording(filename, audioBlob, mousePos) {
-	let formData = new FormData();
-
-	formData.append('audioBlob', audioBlob, filename);
-	formData.append('mousePos', mousePos);
-
-	console.log("saveRecording data:", formData);
-
-	fetch('/saverecording', {
-		method: 'POST',
-		body: formData
-	})
-	.then(response =>response.text())
-	.then(data => {
-		console.log("Sent: ", data); // handle success response
-		// redirect
-
-	})
-	.catch(error => {
-		console.log('Error: ', error);
-	});
-}
 
