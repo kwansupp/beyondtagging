@@ -3,6 +3,11 @@ body {
   padding-top: 20px;
 }
 
+.header a {
+  color: black;
+  text-decoration: none;
+}
+
 .container {
   width: 80%;
   margin: auto;
@@ -12,6 +17,16 @@ body {
   max-width: 100%;
   max-height: 100%;
   display: block;
+}
+
+#image-gallery {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#image-gallery img {
+  max-width: 200px;
+  margin:10px;
 }
 
 

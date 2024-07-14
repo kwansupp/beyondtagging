@@ -3,12 +3,22 @@ console.log("play.js loaded");
 // when document ready
 document.addEventListener("DOMContentLoaded", function() {
 
+	// load images accordingly
+	let pathname = window.location.pathname.split('/');
+	const MODE = pathname[1];
+	const IMAGENAME = pathname[2];
+	console.log(IMAGENAME);
+	
+	// get image name with extension
+	const urlParams = new URLSearchParams(window.location.search);
+	const image = urlParams.get('image');
+
 	// setup canvas
 	const canvas = document.getElementById('canvas');
 	const ctx = canvas.getContext('2d');
 
-	ctx.canvas.width = window.innerWidth; 
-  	ctx.canvas.height = window.innerHeight;
+	ctx.canvas.width = window.innerWidth *0.8; 
+  	ctx.canvas.height = window.innerHeight *0.8;
 
   	// drawing settings
   	ctx.strokeStyle = "red";
@@ -17,11 +27,26 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	// load background image
 	const img = new Image();
-	img.src = '/img/plane-glacier.jpg';
+	// img.src = '/img/plane-glacier.jpg';
+	if (image) {
+		img.src = '/img/' + image;
+	} else {
+		img.src = '/img/plane-glacier.jpg';
+	}
     img.onload = function() {
-    	canvas.width = this.naturalWidth;
-  		canvas.height = this.naturalHeight;
-        ctx.drawImage(this, 0, 0);
+    	let hRatio = ctx.canvas.width / this.naturalWidth;
+    	let wRatio = ctx.canvas.height / this.naturalHeight;
+    	let ratio = Math.min(hRatio, wRatio);
+    	console.log("hRatio, wRatio:", hRatio, wRatio);
+
+    	canvas.width = this.naturalWidth * ratio;
+    	canvas.height = this.naturalHeight * ratio;
+
+    	ctx.drawImage(this, 0, 0, this.naturalWidth, this.naturalHeight, 0, 0, this.naturalWidth*ratio, this.naturalHeight*ratio);
+
+    	// canvas.width = this.naturalWidth;
+  		// canvas.height = this.naturalHeight;
+        // ctx.drawImage(this, 0, 0);
     };
 
     let playState = false;
@@ -34,11 +59,11 @@ document.addEventListener("DOMContentLoaded", function() {
 		playState = true;
 		// LOAD DATA
 		// get blobfile names
-		let data = await loadData();
+		let data = await loadData(IMAGENAME);
 		let blobFiles = data.filenames;
 
-		let audioDir = '/data/audio/';
-		let jsonDir = '/data/json/';
+		let audioDir = '/data/' + IMAGENAME + '/audio/';
+		let jsonDir = '/data/' + IMAGENAME + '/json/';
 
 		// variables to store loaded data
 		let audioEls = []; // audio elements array
@@ -146,11 +171,11 @@ document.addEventListener("DOMContentLoaded", function() {
 	    // }, 1);
 	}
 
-	async function loadData() {
+	async function loadData(imagename) {
 		let data;
 
 		// get all filenames in list
-		await fetch('/getfiles')
+		await fetch('/getfiles/' + imagename)
 			.then(response => response.json())
 			.then(info => {
 				data = info;

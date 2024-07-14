@@ -3,6 +3,15 @@ console.log("record.js loaded");
 // RECORD ///////////////
 // when document ready for recording
 document.addEventListener("DOMContentLoaded", function() {
+	
+	// load images accordingly
+	let pathname = window.location.pathname.split('/');
+	const MODE = pathname[1];
+	const IMAGENAME = pathname[2];
+	
+	// get image name with extension
+	const urlParams = new URLSearchParams(window.location.search);
+	const image = urlParams.get('image');
 
 	// set up audio recording
 	const constraints = {
@@ -31,8 +40,8 @@ document.addEventListener("DOMContentLoaded", function() {
 	const canvas = document.getElementById('canvas');
 	const ctx = canvas.getContext('2d');
 
-	ctx.canvas.width = window.innerWidth; 
-  	ctx.canvas.height = window.innerHeight;
+	ctx.canvas.width = window.innerWidth *0.8; 
+  	ctx.canvas.height = window.innerHeight *0.8;
 
   	// drawing settings
   	ctx.strokeStyle = "red";
@@ -41,11 +50,26 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	// load background image
 	const img = new Image();
-	img.src = '/img/plane-glacier.jpg';
+	// img.src = '/img/plane-glacier.jpg';
+	if (image) {
+		img.src = '/img/' + image;
+	} else {
+		img.src = '/img/plane-glacier.jpg';
+	}
     img.onload = function() {
-    	canvas.width = this.naturalWidth;
-  		canvas.height = this.naturalHeight;
-        ctx.drawImage(this, 0, 0);
+    	let hRatio = ctx.canvas.width / this.naturalWidth;
+    	let wRatio = ctx.canvas.height / this.naturalHeight;
+    	let ratio = Math.min(hRatio, wRatio);
+    	console.log("hRatio, wRatio:", hRatio, wRatio);
+
+    	canvas.width = this.naturalWidth * ratio;
+    	canvas.height = this.naturalHeight * ratio;
+
+    	ctx.drawImage(this, 0, 0, this.naturalWidth, this.naturalHeight, 0, 0, this.naturalWidth*ratio, this.naturalHeight*ratio);
+
+    	// canvas.width = this.naturalWidth;
+  		// canvas.height = this.naturalHeight;
+        // ctx.drawImage(this, 0, 0);
     };
 
 	// variables for tracking mouse position
@@ -162,7 +186,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		// blobToFile(recordedBlobs[0],'/blob/' + blob_fn);
 
 		// send data to db - recordedBlobs, mouseXY, elapsedTime
-		saveRecording(blob_fn, recordedBlobs[0], mouseXY, elapsedTime);
+		saveRecording(IMAGENAME, blob_fn, recordedBlobs[0], mouseXY, elapsedTime);
 	}
 
 	function handleDataAvailable(event) {
@@ -185,7 +209,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		
 	}
 
-	function saveRecording(filename, audioBlob, mouseXY, elapsedTime) {
+	function saveRecording(imagename, filename, audioBlob, mouseXY, elapsedTime) {
 		// let sendData = {
 		// 	"blob_filename": filename,
 		// 	"audio": audioBlob,
@@ -195,6 +219,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		let formData = new FormData();
 
 		// formData.append('blob_fn', filename);
+		formData.append('imagename', imagename);
 		formData.append('audioBlob', audioBlob, filename);
 		formData.append('mouseXY', JSON.stringify(mouseXY));
 		formData.append('elapsedTime', elapsedTime);

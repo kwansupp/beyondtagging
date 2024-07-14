@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Beyond Tagging</title>
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1><a href="/">Beyond Tagging</a></h1>
+      <p>Draw over the image and describe what you see!</p>
+      <p><a id="startButton" class="btn btn-primary start-btn" href="#" role="button">Start recording</a></p>
+      <!-- <p><a id="playButton" class="btn" href="#" role="button">Play recording</a></p> -->
+      <!-- <p>Status: <span id="status">Move your cursor into the image area to start recording!</span></p> -->
+      <!-- <p id="timer">elapsed time</p> -->
+    </div> 
+    <div class="content">
+      <div id="image-container">
+        <canvas id="canvas"></canvas>
+        <!-- <img src="/img/plane-glacier.jpg" alt="image"> -->
+      </div>
+      <div id="status-container">
+        
+      </div>
+      <p><a class="btn" href="play" role="button">View all recordings</a></p>
+    </div>
+  </div>
+  <script src="/js/record.js"></script>
+</body>
+</html>
